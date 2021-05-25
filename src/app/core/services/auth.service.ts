@@ -5,7 +5,7 @@ import {
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
-import { auth } from 'firebase';
+import * as firebase from 'firebase/app';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -36,7 +36,7 @@ export class AuthService {
   }
 
   async googleSignin() {
-    const provider = new auth.GoogleAuthProvider();
+    const provider = new firebase.auth.GoogleAuthProvider();
     const credential = await this.angularFireAuth.signInWithPopup(provider);
     return this.updateUserData(credential.user);
   }
