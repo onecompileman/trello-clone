@@ -1,0 +1,72 @@
+<div class="tc-board p-3">
+  <div
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+    [cdkDropListData]="lists"
+    (cdkDropListDropped)="drop($event)"
+    class="d-flex"
+  >
+    <div
+      class="tc-board__list-item m-2"
+      *ngFor="let l of lists; let i = index"
+      cdkDropListGroup
+      [cdkDragData]="l"
+      cdkDrag
+    >
+      <div class="tc-board__list-item--header">
+        <span> {{ l.name }} </span>
+        <div class="btn-group" dropdown>
+          <div dropdownToggle aria-controls="dropdown-basic">
+            <i class="fa fa-ellipsis-h"></i>
+          </div>
+          <ul
+            id="dropdown-basic"
+            *dropdownMenu
+            class="dropdown-menu"
+            role="menu"
+            aria-labelledby="button-basic"
+          >
+            <li role="menuitem">
+              <a class="dropdown-item" href="#">Delete List</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div
+        class="tc-board__list-item--body"
+        id="{{ l.name }}"
+        cdkDropList
+        [cdkDropListData]="l.cards"
+        (cdkDropListDropped)="drop($event)"
+        [cdkDropListConnectedTo]="connectedList"
+      >
+        <div
+          class="tc-board__card"
+          *ngFor="let c of l.cards"
+          (click)="viewCard()"
+          cdkDrag
+          [cdkDragData]="c"
+        >
+          <div class="tc-board__card-image"></div>
+          <span class="tc-board__card-title">{{ c }} </span>
+        </div>
+      </div>
+      <div (click)="addCard()" class="tc-board__list-item--footer">
+        + Add card
+      </div>
+    </div>
+  </div>
+
+  <!-- Add new list -->
+  <div class="tc-board__list-item m-2">
+    <div class="tc-board__list-item--header">
+      <input type="text" class="form-control" />
+    </div>
+    <div class="tc-board__list-item--footer mt-2">
+      <button class="btn btn-primary">+ Add list</button>
+      <button class="btn btn-default">Cancel</button>
+    </div>
+  </div>
+
+  <div class="tc-board__add-list m-2">+ Add List</div>
+</div>

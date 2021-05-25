@@ -1,0 +1,30 @@
+<div class="tc-home">
+  <div class="w-100 d-flex justify-content-between align-items-center mt-5">
+    <h4>Personal Boards</h4>
+    <button class="btn btn-primary" (click)="addBoard()">+ Add Board</button>
+  </div>
+  <div
+    class="w-100 d-flex flex-wrap justify-content-xs-center justify-content-md-start"
+  >
+    <div
+      class="tc-home__board-item m-2"
+      *ngFor="let n of [1, 2, 3, 4, 5, 6, 7]"
+    >
+      Board {{ n }}
+    </div>
+  </div>
+
+  <div class="w-100 d-flex justify-content-between align-items-center mt-5">
+    <h4>Shared Boards</h4>
+  </div>
+  <div
+    class="w-100 d-flex flex-wrap justify-content-xs-center justify-content-md-start"
+  >
+    <div
+      class="tc-home__board-item m-2"
+      *ngFor="let n of [1, 2, 3, 4, 5, 6, 7, 8, 9]"
+    >
+      Board {{ n }}
+    </div>
+  </div>
+</div>

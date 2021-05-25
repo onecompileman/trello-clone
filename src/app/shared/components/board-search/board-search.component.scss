@@ -1,0 +1,37 @@
+@import '~src/assets/scss/config';
+
+.#{$style-prefix}-board-search {
+  &__header {
+    i {
+      cursor: pointer;
+    }
+  }
+
+  &__board-search {
+    width: 280px;
+    background-color: white;
+    max-height: 70vh;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: $dark;
+    }
+  }
+
+  &__board-item {
+    box-shadow: 0 0 5px rgb(0 0 0 / 30%);
+    height: 32px;
+    width: 100%;
+    background-color: #1976d2;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

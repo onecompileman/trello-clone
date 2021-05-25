@@ -1,0 +1,28 @@
+@import '~src/assets/scss/config';
+
+.#{$style-prefix}-login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+
+  &__logo-container {
+    padding: 10px;
+    box-shadow: 5px 5px #000;
+    border-radius: 5px;
+    border: 2px solid $primary;
+  }
+
+  &__title {
+    font-size: 32px;
+    color: $primary;
+  }
+
+  &__btn {
+    background-color: $primary;
+    box-shadow: 5px 5px #000;
+    color: white;
+    min-width: 150px;
+  }
+}

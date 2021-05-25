@@ -1,0 +1,45 @@
+<div class="tc-create-board">
+  <div class="modal-header">
+    <h4 class="modal-title text-sm pull-left">
+      <img src="assets/images/logo.png" alt="Logo" class="mr-2" height="32" />
+      Create Board
+    </h4>
+    <button
+      type="button"
+      class="close pull-right"
+      aria-label="Close"
+      (click)="modalRef.hide()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <label for=""> Board Title </label
+        ><input type="text" class="form-control" />
+      </div>
+
+      <div class="form-group">
+        <label for=""> Board color </label>
+        <div class="d-flex flex-wrap">
+          <div
+            *ngFor="let c of colorCodes"
+            (click)="activeColorCode = c"
+            class="m-1 tc-create-board__color"
+            [class.tc-create-board__color--active]="activeColorCode === c"
+            [ngStyle]="{ backgroundColor: c }"
+          ></div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end w-100">
+        <button class="btn">Cancel</button>
+
+        <button class="btn btn-primary">
+          <i class="fa fa-spin fa-spinner mr-2"></i>Create
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

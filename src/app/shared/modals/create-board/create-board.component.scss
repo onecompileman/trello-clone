@@ -1,0 +1,20 @@
+@import '~src/assets/scss/config';
+
+.#{$style-prefix}-create-board {
+  &__color {
+    height: 32px;
+    width: 32px;
+    transition: 0.2s linear;
+    border-radius: 100%;
+    cursor: pointer;
+
+    &--active {
+      border: 3px solid $primary;
+      transform: scale(1.1);
+    }
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}

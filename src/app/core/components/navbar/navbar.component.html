@@ -1,0 +1,71 @@
+<div class="tc-navbar">
+  <nav class="navbar navbar-dark bg-primary">
+    <div class="d-flex align-items-center">
+      <div class="tc-navbar__logo-container">
+        <img src="assets/images/logo.png" alt="Logo" />
+      </div>
+      <span *ngIf="!isBoardRoute" class="ml-3 tc-navbar__app-title">
+        Manage Mo To
+      </span>
+      <ng-container *ngIf="isBoardRoute">
+        <tc-board-search></tc-board-search>
+        <input
+          type="search"
+          class="form-control ml-2"
+          placeholder="Search card"
+        />
+      </ng-container>
+    </div>
+
+    <div class="btn-group" dropdown placement="left">
+      <div
+        id="button-basic"
+        dropdownToggle
+        class="tc-navbar__profile"
+        aria-controls="dropdown-basic"
+      >
+        <img
+          src="https://scontent.fmnl4-1.fna.fbcdn.net/v/t1.6435-1/cp0/p50x50/104782120_3241128869287857_4439796952515505622_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_eui2=AeFLidDolkwhb4sxdLWlDrM83VYBI8KVYpHdVgEjwpVikZ3cA0gdAGZ_66jtcx2t-IVy5J1suX4T7xQ_iYcBTAoh&_nc_ohc=xHGlVfs0c3sAX-C8ZrG&_nc_ht=scontent.fmnl4-1.fna&tp=27&oh=342df614d0cbf03c846fc7798e8d9448&oe=60CCC72F"
+          alt=""
+        />
+        <span class="caret"></span>
+      </div>
+      <ul
+        id="dropdown-basic"
+        *dropdownMenu
+        class="dropdown-menu dropdown-menu-left"
+        role="menu"
+        aria-labelledby="button-basic"
+      >
+        <li role="menuitem">
+          <a class="dropdown-item" href="#">Logout</a>
+        </li>
+        <!-- <li role="menuitem">
+        <a class="dropdown-item" href="#">Something else here</a>
+      </li>
+      <li class="divider dropdown-divider"></li> -->
+        <!-- <li role="menuitem">
+        <a class="dropdown-item" href="#">Separated link</a>
+      </li> -->
+      </ul>
+    </div>
+  </nav>
+  <nav class="navbar navbar-dark tc-navbar__sub-nav" *ngIf="isBoardRoute">
+    <div class="d-flex align-items-center">
+      <span class="mr-2">Board Name</span>
+      <span>|</span>
+      <small class="ml-2"> Members </small>
+      <div class="d-flex ml-2 tc-navbar__member-container align-items-center">
+        <img
+          *ngFor="let n of [1, 2, 3, 4]"
+          src="https://scontent.fmnl4-1.fna.fbcdn.net/v/t1.6435-1/cp0/p50x50/104782120_3241128869287857_4439796952515505622_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_eui2=AeFLidDolkwhb4sxdLWlDrM83VYBI8KVYpHdVgEjwpVikZ3cA0gdAGZ_66jtcx2t-IVy5J1suX4T7xQ_iYcBTAoh&_nc_ohc=xHGlVfs0c3sAX-C8ZrG&_nc_ht=scontent.fmnl4-1.fna&tp=27&oh=342df614d0cbf03c846fc7798e8d9448&oe=60CCC72F"
+          alt=""
+        />
+        <span class="badge badge-dark ml-2" style="height: fit-content"
+          >+ 3</span
+        >
+      </div>
+      <tc-invite-user></tc-invite-user>
+    </div>
+  </nav>
+</div>
