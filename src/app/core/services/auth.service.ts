@@ -5,7 +5,7 @@ import {
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
-import * as firebase from 'firebase/app';
+import firebase from 'firebase';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -22,11 +22,12 @@ export class AuthService {
   ) {
     this.user$ = this.angularFireAuth.authState.pipe(
       switchMap((user) => {
+        console.log(user);
         // Logged in
         if (user) {
           return this.angularFirestore
             .doc<any>(`users/${user.uid}`)
-            .valueChanges();
+            .valueChanges({ idField: 'id' });
         } else {
           // Logged out
           return of(null);
@@ -41,9 +42,11 @@ export class AuthService {
     return this.updateUserData(credential.user);
   }
 
-  async signOut() {
-    await this.angularFireAuth.signOut();
-    this.router.navigate(['/']);
+  signOut() {
+    this.angularFireAuth.signOut().then((res) => {
+      console.log(res);
+      this.router.navigate(['/']);
+    });
   }
 
   getCurrentUser() {

@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <h4 class="modal-title text-sm pull-left d-flex">Confirmation</h4>
+  <button
+    type="button"
+    class="close pull-right"
+    aria-label="Close"
+    (click)="modalRef.hide()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <p [innerHTML]="message" style="font-size: 18px"></p>
+  <div class="d-flex justify-content-end w-100">
+    <button (click)="modalRef.hide()" class="btn">Cancel</button>
+
+    <button (click)="confirm()" class="btn btn-primary">Confirm</button>
+  </div>
+</div>

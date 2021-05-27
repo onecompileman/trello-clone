@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AuthService } from '../../services/auth.service';
+import { Board } from 'src/app/shared/models/board.model';
+import { BoardStateService } from '../../services/board-state.service';
+import { BoardDataService } from '../../data-services/board.data-service';
 
 @Component({
   selector: 'tc-navbar',
@@ -10,11 +14,18 @@ import { filter } from 'rxjs/operators';
 export class NavbarComponent implements OnInit {
   isBoardRoute: boolean = false;
 
-  constructor(private router: Router) {}
+  user: any;
+
+  constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.isBoardRoute = this.router.url.includes('board');
     this.routeChangeListener();
+    this.getActiveUser();
+  }
+
+  logout() {
+    this.authService.signOut();
   }
 
   private routeChangeListener() {
@@ -23,5 +34,12 @@ export class NavbarComponent implements OnInit {
       .subscribe(() => {
         this.isBoardRoute = this.router.url.includes('board');
       });
+  }
+
+  private getActiveUser() {
+    this.authService.user$.subscribe((user) => {
+      this.user = user;
+      console.log(user);
+    });
   }
 }

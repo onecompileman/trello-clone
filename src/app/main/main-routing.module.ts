@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { MainComponent } from './main.component';
 import { HomeComponent } from './home/home.component';
 import { BoardComponent } from './board/board.component';
+import { BoardInfoResolver } from '../core/resolvers/board-info.resolver';
 
 const routes: Routes = [
   {
@@ -16,6 +17,7 @@ const routes: Routes = [
       {
         path: 'board/:id',
         component: BoardComponent,
+        resolve: [BoardInfoResolver],
       },
     ],
   },

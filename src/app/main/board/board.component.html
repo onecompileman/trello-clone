@@ -1,9 +1,12 @@
-<div class="tc-board p-3">
+<div
+  class="tc-board p-3"
+  [ngStyle]="{ backgroundColor: activeBoard?.colorCode }"
+>
   <div
     cdkDropList
     cdkDropListOrientation="horizontal"
     [cdkDropListData]="lists"
-    (cdkDropListDropped)="drop($event)"
+    (cdkDropListDropped)="dropList($event)"
     class="d-flex"
   >
     <div
@@ -27,7 +30,7 @@
             aria-labelledby="button-basic"
           >
             <li role="menuitem">
-              <a class="dropdown-item" href="#">Delete List</a>
+              <a class="dropdown-item" (click)="deleteList(l)">Delete List</a>
             </li>
           </ul>
         </div>
@@ -37,7 +40,7 @@
         id="{{ l.name }}"
         cdkDropList
         [cdkDropListData]="l.cards"
-        (cdkDropListDropped)="drop($event)"
+        (cdkDropListDropped)="dropList($event)"
         [cdkDropListConnectedTo]="connectedList"
       >
         <div
@@ -58,15 +61,40 @@
   </div>
 
   <!-- Add new list -->
-  <div class="tc-board__list-item m-2">
-    <div class="tc-board__list-item--header">
-      <input type="text" class="form-control" />
-    </div>
-    <div class="tc-board__list-item--footer mt-2">
-      <button class="btn btn-primary">+ Add list</button>
-      <button class="btn btn-default">Cancel</button>
-    </div>
+  <div class="tc-board__list-item m-2" *ngIf="isAddListOpen">
+    <form [formGroup]="addListForm">
+      <div class="tc-board__list-item--header">
+        <input
+          type="text"
+          class="form-control"
+          formControlName="name"
+          required
+          maxlength="25"
+        />
+        <ng-container *ngIf="listName.touched && listName.errors">
+          <div class="invalid-feedback">List name is required</div>
+          <div class="invalid-feedback">
+            List name should be equals or less than 25 characters
+          </div>
+        </ng-container>
+      </div>
+      <div class="tc-board__list-item--footer mt-2">
+        <button
+          [disabled]="isAddingListForm"
+          (click)="createList()"
+          class="btn btn-primary"
+        >
+          <i *ngIf="isAddingListForm" class="fa fa-spin fa-spinner mr-2"> </i>
+          Add list
+        </button>
+        <button (click)="isAddListOpen = false" class="btn btn-default">
+          Cancel
+        </button>
+      </div>
+    </form>
   </div>
 
-  <div class="tc-board__add-list m-2">+ Add List</div>
+  <div class="tc-board__add-list m-2" (click)="isAddListOpen = true">
+    + Add List
+  </div>
 </div>

@@ -1,11 +1,11 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from './components/navbar/navbar.component';
 import { SharedModule } from '../shared/shared.module';
+import * as fromComponents from './components';
 
 @NgModule({
-  declarations: [NavbarComponent],
-  exports: [NavbarComponent],
+  declarations: [...fromComponents.components],
+  exports: [...fromComponents.components],
   imports: [CommonModule, SharedModule],
 })
 export class CoreModule {

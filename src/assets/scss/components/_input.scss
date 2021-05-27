@@ -1,0 +1,7 @@
+@import '../theme-config.scss';
+
+.form-control {
+  &.ng-touched.ng-invalid {
+    border-color: $danger;
+  }
+}

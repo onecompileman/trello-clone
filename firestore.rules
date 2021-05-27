@@ -1,8 +1,38 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function checkIfUser(u) {
+      return u.data.uid == request.auth.uid;
+    }
+
+
+    function checkBoardIfOwner(b) {
+      return  b.data.userId == request.auth.uid;
+    }
+
+    match /users {
+      allow read, create;
+    }
+
+    match /users/{user} {
+      allow write: if isSignedIn() && checkIfUser(get(/databases/$(database)/documents/users/$(user)));
+      allow read;
+      allow create;
+    }
+
+    match /boards {
+      allow create,read: if isSignedIn(); 
+    }
+
+    match /boards/{board} {
+      allow delete, write: if isSignedIn() && checkBoardIfOwner(get(/databases/$(database)/documents/boards/$(board)));
+      allow read;
+      allow create;
     }
   }
 }

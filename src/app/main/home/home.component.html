@@ -6,12 +6,14 @@
   <div
     class="w-100 d-flex flex-wrap justify-content-xs-center justify-content-md-start"
   >
-    <div
+    <a
       class="tc-home__board-item m-2"
-      *ngFor="let n of [1, 2, 3, 4, 5, 6, 7]"
+      [routerLink]="['/main', 'board', board.id]"
+      *ngFor="let board of boards$ | async"
+      [ngStyle]="{ backgroundColor: board.colorCode }"
     >
-      Board {{ n }}
-    </div>
+      {{ board.name }}
+    </a>
   </div>
 
   <div class="w-100 d-flex justify-content-between align-items-center mt-5">
