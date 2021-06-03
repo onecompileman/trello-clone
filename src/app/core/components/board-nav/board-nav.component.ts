@@ -49,6 +49,51 @@ export class BoardNavComponent implements OnInit {
     });
   }
 
+  leaveBoard() {
+    const confirmCallback = async () => {
+      const index = this.activeBoard.users.indexOf(this.user.id);
+      this.activeBoard.users.splice(index, 1);
+
+      await this.boardDataService.update({
+        id: this.activeBoard.id,
+        users: this.activeBoard.users,
+      });
+
+      this.router.navigate(['/main']);
+    };
+
+    const message = `Are you sure to leave this board?`;
+
+    this.modalService.show(ConfirmationComponent, {
+      ignoreBackdropClick: true,
+      initialState: {
+        confirmCallback,
+        message,
+      },
+    });
+  }
+
+  removeUser(index: number) {
+    const confirmCallback = () => {
+      this.activeBoard.users.splice(index, 1);
+      this.activeBoard.$$users.splice(index, 1);
+      this.boardDataService.update({
+        id: this.activeBoard.id,
+        users: this.activeBoard.users,
+      });
+    };
+    const userToRemove = this.activeBoard.$$users[index];
+    const message = `Are you sure to remove <b>${userToRemove.displayName}</b> to the board?`;
+
+    this.modalService.show(ConfirmationComponent, {
+      ignoreBackdropClick: true,
+      initialState: {
+        confirmCallback,
+        message,
+      },
+    });
+  }
+
   deleteBoard() {
     const confirmCallback = async () => {
       await this.boardDataService.delete(this.activeBoard.id);

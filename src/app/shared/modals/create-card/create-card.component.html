@@ -14,15 +14,41 @@
     </button>
   </div>
   <div class="modal-body">
-    <form>
+    <form [formGroup]="createCardForm">
       <div class="form-group">
         <label for=""> Card Title </label
-        ><input type="text" class="form-control" />
+        ><input
+          type="text"
+          class="form-control"
+          required
+          maxlength="50"
+          formControlName="name"
+        />
+        <ng-container *ngIf="name.touched && name.errors">
+          <div *ngIf="name.errors.required" class="invalid-feedback">
+            Card title is required
+          </div>
+          <div *ngIf="name.errors.maxlength" class="invalid-feedback">
+            Card title should be less than 50 characters
+          </div>
+        </ng-container>
       </div>
 
       <div class="form-group">
         <label for=""> Card Description </label>
-        <textarea name="" id="" cols="30" class="form-control"></textarea>
+        <textarea
+          name=""
+          id=""
+          cols="30"
+          class="form-control"
+          required
+          formControlName="description"
+        ></textarea>
+        <ng-container *ngIf="description.touched && description.errors">
+          <div *ngIf="description.errors.required" class="invalid-feedback">
+            Card description is required
+          </div>
+        </ng-container>
       </div>
 
       <div class="tc-create-board__images">
@@ -32,10 +58,22 @@
         </div>
 
         <div class="d-flex align-items-center mt-2">
-          <div class="tc-create-board__image-item m-2">
-            <i class="fa fa-times-circle"></i>
+          <div
+            *ngFor="let image of imageURLs; let i = index"
+            [ngStyle]="{
+              backgroundImage: image
+            }"
+            class="tc-create-board__image-item m-2"
+          >
+            <i (click)="removeImage(i)" class="fa fa-times-circle"></i>
           </div>
-          <input type="file" class="d-none" #imageUpload />
+          <input
+            type="file"
+            class="d-none"
+            (change)="onUploadImage($event)"
+            #imageUpload
+            accept="image/png, image/jpeg"
+          />
           <div class="tc-create-board__add-image" (click)="imageUpload.click()">
             + Add Image
           </div>
@@ -45,8 +83,12 @@
       <div class="d-flex justify-content-end w-100">
         <button class="btn">Cancel</button>
 
-        <button class="btn btn-primary">
-          <i class="fa fa-spin fa-spinner mr-2"></i>Create
+        <button
+          [disabled]="isCreating || !createCardForm.valid"
+          class="btn btn-primary"
+          (click)="createCard()"
+        >
+          <i *ngIf="isCreating" class="fa fa-spin fa-spinner mr-2"></i>Create
         </button>
       </div>
     </form>

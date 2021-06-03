@@ -6,17 +6,53 @@
       <small class="ml-2"> Members </small>
       <div class="d-flex ml-2 tc-navbar__member-container align-items-center">
         <img
-          *ngFor="let n of [1, 2, 3, 4]"
-          src="https://scontent.fmnl4-1.fna.fbcdn.net/v/t1.6435-1/cp0/p50x50/104782120_3241128869287857_4439796952515505622_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_eui2=AeFLidDolkwhb4sxdLWlDrM83VYBI8KVYpHdVgEjwpVikZ3cA0gdAGZ_66jtcx2t-IVy5J1suX4T7xQ_iYcBTAoh&_nc_ohc=xHGlVfs0c3sAX-C8ZrG&_nc_ht=scontent.fmnl4-1.fna&tp=27&oh=342df614d0cbf03c846fc7798e8d9448&oe=60CCC72F"
-          alt=""
+          *ngIf="activeBoard.$$owner"
+          [src]="activeBoard.$$owner.photoURL"
+          [tooltip]="activeBoard.$$owner.displayName"
         />
-        <span class="badge badge-dark ml-2" style="height: fit-content"
-          >+ 3</span
+        <img
+          *ngFor="let user of activeBoard?.$$users.slice(0, 4)"
+          [src]="user.photoURL"
+          [tooltip]="user.displayName"
+        />
+
+        <div
+          *ngIf="activeBoard?.$$users.length > 4"
+          class="btn-group"
+          #usersDropdown="bs-dropdown"
+          dropdown
+          [autoClose]="false"
         >
+          <span
+            dropdownToggle
+            aria-controls="dropdown-basic"
+            class="badge badge-dark ml-2"
+            style="height: fit-content; cursor: pointer"
+            >+ {{ activeBoard?.$$users.length - 4 }}</span
+          >
+          <ul
+            id="dropdown-basic"
+            *dropdownMenu
+            class="dropdown-menu tc-navbar__invite-container"
+            role="menu"
+            aria-labelledby="button-basic"
+          >
+            <small for="" class="m-2">Users :</small>
+            <div class="d-flex align-items-center flex-wrap m-1">
+              <div
+                class="tc-navbar__user-add-picture m-1"
+                *ngFor="let user of activeBoard.$$users; let i = index"
+              >
+                <img [src]="user.photoURL" [tooltip]="user.displayName" />
+                <i (click)="removeUser(i)" class="fa fa-times-circle"></i>
+              </div>
+            </div>
+          </ul>
+        </div>
       </div>
-      <tc-invite-user></tc-invite-user>
+      <tc-invite-user [board]="activeBoard"></tc-invite-user>
     </div>
-    <div *ngIf="isOwner" class="btn-group" dropdown>
+    <div class="btn-group" dropdown>
       <button
         dropdownToggle
         aria-controls="dropdown-basic"
@@ -31,9 +67,12 @@
         role="menu"
         aria-labelledby="button-basic"
       >
-        <li role="menuitem">
+        <li *ngIf="isOwner" role="menuitem">
           <a class="dropdown-item" (click)="editBoard()">Edit</a>
           <a class="dropdown-item" (click)="deleteBoard()">Delete</a>
+        </li>
+        <li *ngIf="!isOwner" role="menuitem">
+          <a class="dropdown-item" (click)="leaveBoard()">Leave board</a>
         </li>
       </ul>
     </div>

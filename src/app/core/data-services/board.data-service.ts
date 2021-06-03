@@ -52,4 +52,12 @@ export class BoardDataService {
       )
       .valueChanges({ idField: 'id' });
   }
+
+  getAllByAddedUserId(userId: string): Observable<any[]> {
+    return this.angularFirestore
+      .collection(this.collectionName, (ref) =>
+        ref.where('users', 'array-contains', userId)
+      )
+      .valueChanges({ idField: 'id' });
+  }
 }

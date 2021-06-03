@@ -17,23 +17,35 @@
     <div
       class="d-flex justify-content-between align-items-center w-100 tc-board-search__header"
     >
-      <input type="search" class="form-control" placeholder="Search boards" />
+      <input
+        type="search"
+        class="form-control"
+        placeholder="Search boards"
+        name="search"
+        [(ngModel)]="search"
+      />
       <i (click)="boardDropdown.hide()" class="fa fa-times mr-1 ml-1"></i>
     </div>
 
     <label class="mt-2" for="">Personal Boards</label>
 
-    <div
-      *ngFor="let n of [1, 2, 3, 4, 5, 6, 7, 8, 9]"
-      class="tc-board-search__board-item m-1"
+    <a
+      class="tc-board-search__board-item m-2"
+      [routerLink]="['/main', 'board', board.id]"
+      *ngFor="let board of boards$ | async | searchBoard: search"
+      [ngStyle]="{ backgroundColor: board.colorCode }"
     >
-      Board {{ n }}
-    </div>
-
+      {{ board.name }}
+    </a>
     <label class="mt-3" for="">Shared Boards</label>
 
-    <div *ngFor="let n of [1, 2, 3, 4]" class="tc-board-search__board-item m-1">
-      Board {{ n }}
-    </div>
+    <a
+      class="tc-board-search__board-item m-2"
+      [routerLink]="['/main', 'board', board.id]"
+      *ngFor="let board of sharedBoards$ | async | searchBoard: search"
+      [ngStyle]="{ backgroundColor: board.colorCode }"
+    >
+      {{ board.name }}
+    </a>
   </ul>
 </div>

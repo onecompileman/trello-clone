@@ -16,7 +16,11 @@ export class NavbarComponent implements OnInit {
 
   user: any;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private boardStateService: BoardStateService
+  ) {}
 
   ngOnInit(): void {
     this.isBoardRoute = this.router.url.includes('board');
@@ -26,6 +30,12 @@ export class NavbarComponent implements OnInit {
 
   logout() {
     this.authService.signOut();
+  }
+
+  searchCards(value) {
+    if (!value.length || value.length > 3) {
+      this.boardStateService.searchCardTerm$.next(value);
+    }
   }
 
   private routeChangeListener() {

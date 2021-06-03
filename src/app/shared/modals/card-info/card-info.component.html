@@ -1,35 +1,75 @@
 <div class="tc-create-board">
-  <form>
+  <form [formGroup]="editCardForm">
     <div class="modal-header">
       <h4 class="modal-title text-sm pull-left d-flex">
         <img src="assets/images/logo.png" alt="Logo" class="mr-2" height="32" />
-        <span>Haha</span>
-        <div *ngIf="false" class="form-group">
-          <input type="text" class="form-control" />
+        <span (click)="isNameEdit = true" *ngIf="!isNameEdit">{{
+          card?.name
+        }}</span>
+        <div *ngIf="isNameEdit" class="form-group">
+          <input
+            type="text"
+            class="form-control"
+            required
+            formControlName="name"
+            maxlength="50"
+            (blur)="isNameEdit = false; update()"
+            (keydown.enter)="$event.target.blur(); isNameEdit = false; update()"
+          />
         </div>
       </h4>
-      <button
-        type="button"
-        class="close pull-right"
-        aria-label="Close"
-        (click)="modalRef.hide()"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
+      <div class="pull-right d-flex align-items-center">
+        <div class="btn-group mr-2" dropdown>
+          <button
+            dropdownToggle
+            aria-controls="dropdown-basic"
+            class="btn btn-default"
+          >
+            <i class="fa fa-ellipsis-v"> </i>
+          </button>
+          <ul
+            id="dropdown-basic"
+            *dropdownMenu
+            class="dropdown-menu"
+            role="menu"
+            aria-labelledby="button-basic"
+          >
+            <li role="menuitem">
+              <a class="dropdown-item" (click)="deleteCard()">Delete Card</a>
+            </li>
+          </ul>
+        </div>
+
+        <button
+          type="button"
+          class="close"
+          aria-label="Close"
+          (click)="modalRef.hide()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
     </div>
     <div class="modal-body">
       <div class="form-group">
         <label for=""> Card Description </label>
-        <p>
-          safasdfasdfasdfsadfasdfasdf sdfsdfsadfsadfsadfasdf
-          safasdfasdfasdfsadfasdfasdfsadfsadfsadfasdfsa asdfasdfsdfsa
-        </p>
+        <p
+          *ngIf="!isDescriptionEdit"
+          (click)="isDescriptionEdit = true"
+          [innerHTML]="card?.description"
+          style="white-space: pre-wrap"
+        ></p>
         <textarea
-          *ngIf="false"
+          *ngIf="isDescriptionEdit"
           name=""
           id=""
           cols="30"
           class="form-control"
+          formControlName="description"
+          (blur)="isDescriptionEdit = false; update()"
+          (keydown.enter)="
+            $event.target.blur(); isDescriptionEdit = false; update()
+          "
         ></textarea>
       </div>
 
@@ -40,15 +80,48 @@
         </div>
 
         <div class="d-flex align-items-center mt-2">
-          <div class="tc-create-board__image-item m-2">
-            <i class="fa fa-times-circle"></i>
+          <div
+            class="tc-create-board__image-item m-2"
+            *ngFor="let image of card?.images; let i = index"
+            [ngStyle]="{
+              backgroundImage: 'url(' + image + ')'
+            }"
+          >
+            <i
+              class="fa fa-times-circle text-cursor"
+              (click)="removeExistingImage(i)"
+            ></i>
           </div>
-          <input type="file" class="d-none" #imageUpload />
+
+          <div
+            class="tc-create-board__image-item m-2"
+            *ngFor="let image of imageURLs; let i = index"
+            [ngStyle]="{
+              backgroundImage: image
+            }"
+          >
+            <i
+              class="fa fa-times-circle text-cursor"
+              (click)="removeImage(i)"
+            ></i>
+          </div>
+          <input
+            type="file"
+            class="d-none"
+            #imageUpload
+            (change)="onUploadImage($event)"
+          />
           <div class="tc-create-board__add-image" (click)="imageUpload.click()">
             + Add Image
           </div>
         </div>
       </div>
+
+      <!-- <div class="d-flex justify-content-end w-100">
+        <button class="btn btn-danger" (click)="deleteCard()">
+          Delete Card
+        </button>
+      </div> -->
     </div>
   </form>
 </div>

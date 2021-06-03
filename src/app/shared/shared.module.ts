@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import * as fromModals from './modals';
@@ -23,6 +24,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     DragDropModule,
     ModalModule.forRoot(),
     NgxTagsInputModule,
+    TooltipModule.forRoot(),
   ],
   exports: [
     BsDropdownModule,
@@ -31,6 +33,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     FormsModule,
     DragDropModule,
     NgxTagsInputModule,
+    TooltipModule,
     ...fromComponents.components,
     ...fromModals.modals,
     ...fromPipes.pipes,

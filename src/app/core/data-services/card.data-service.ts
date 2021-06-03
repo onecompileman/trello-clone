@@ -38,6 +38,24 @@ export class CardDataService {
       .set({ ...card }, { merge: true });
   }
 
+  batchUpdates(cards: Card[]): Promise<any> {
+    const batch = this.angularFirestore.firestore.batch();
+
+    for (let i = 0; i < cards.length; i++) {
+      batch.set(
+        <any>(
+          this.angularFirestore.firestore
+            .collection(this.collectionName)
+            .doc(cards[i].id)
+        ),
+        cards[i],
+        { merge: true }
+      );
+    }
+
+    return batch.commit();
+  }
+
   getAllByBoardId(boardId: string): Observable<any[]> {
     return this.angularFirestore
       .collection(this.collectionName, (ref) =>
@@ -49,7 +67,7 @@ export class CardDataService {
   getAllByListId(listId: string): Observable<any[]> {
     return this.angularFirestore
       .collection(this.collectionName, (ref) =>
-        ref.where('listid', '==', listId)
+        ref.where('listId', '==', listId)
       )
       .valueChanges({ idField: 'id' });
   }

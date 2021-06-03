@@ -6,11 +6,63 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
-      <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <style>
+      .tc-loading {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        height: 100%;
+        background-color: white;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10000000;
+      }
+
+      .tc-loading__logo-container {
+        padding: 10px;
+        box-shadow: 5px 5px #000;
+        border-radius: 5px;
+        border: 2px solid #1976d2;
+        animation-name: throb;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+      }
+
+      @keyframes throb {
+        0% {
+          transform: scale(1);
+        }
+
+        50% {
+          transform: scale(1.1);
+        }
+
+        100% {
+          transform: scale(1);
+        }
+      }
+    </style>
+  </head>
   <body>
-    <tc-root></tc-root>
+    <tc-root>
+      <div class="tc-loading">
+        <div class="tc-loading__logo-container">
+          <img src="assets/images/logo.png" alt="Logo" />
+        </div>
+      </div>
+    </tc-root>
   </body>
 </html>

@@ -1,9 +1,9 @@
 <div class="tc-navbar">
   <nav class="navbar navbar-dark bg-primary">
     <div class="d-flex align-items-center">
-      <div class="tc-navbar__logo-container">
+      <a routerLink="/main" class="tc-navbar__logo-container">
         <img src="assets/images/logo.png" alt="Logo" />
-      </div>
+      </a>
       <span *ngIf="!isBoardRoute" class="ml-3 tc-navbar__app-title">
         Manage Mo To
       </span>
@@ -13,6 +13,7 @@
           type="search"
           class="form-control ml-2"
           placeholder="Search card"
+          (keyup)="searchCards($event.target.value)"
         />
       </ng-container>
     </div>

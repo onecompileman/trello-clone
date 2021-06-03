@@ -7,6 +7,7 @@ import { BoardDataService } from 'src/app/core/data-services/board.data-service'
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { tap } from 'rxjs/operators';
+import { LoadingService } from 'src/app/core/services/loading.service';
 
 @Component({
   selector: 'tc-home',
@@ -15,18 +16,22 @@ import { tap } from 'rxjs/operators';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   boards$: Observable<Board[]>;
+  sharedBoards$: Observable<Board[]>;
   user: any;
 
   constructor(
     private modalService: BsModalService,
     private boardDataService: BoardDataService,
-    private authService: AuthService
+    private authService: AuthService,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit(): void {
     this.getUser$()
       .pipe(tap(() => this.getBoards()))
-      .subscribe();
+      .subscribe(() => {
+        this.loadingService.loading$.next(false);
+      });
   }
 
   ngOnDestroy(): void {}
@@ -40,6 +45,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   private getBoards() {
     this.boards$ = this.boardDataService
       .getAllByUserId(this.user.id)
+      .pipe(untilDestroyed(this));
+
+    this.sharedBoards$ = this.boardDataService
+      .getAllByAddedUserId(this.user.id)
       .pipe(untilDestroyed(this));
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import {
   CreateCardComponent,
@@ -18,22 +18,22 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { ListDataService } from 'src/app/core/data-services/list.data-service';
 import { ToastrService } from 'ngx-toastr';
+import { LoadingService } from 'src/app/core/services/loading.service';
+import { CardDataService } from 'src/app/core/data-services/card.data-service';
+import { Card } from 'src/app/shared/models/card.model';
+import { Router, ActivatedRoute } from '@angular/router';
+import { flatten, cloneDeep } from 'lodash';
 
 @Component({
   selector: 'tc-board',
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
 })
-export class BoardComponent implements OnInit, OnDestroy {
-  lists: List[] = [
-    // {
-    //   name: 'Todo',
-    //   cards: ['Login Screen', ' Registration Screen', 'App Setup'],
-    // },
-    // { name: 'Doing', cards: ['haha'] },
-    // { name: 'For Deployment', cards: [] },
-    // { name: 'Done', cards: [] },
-  ];
+export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
+  lists: List[] = [];
+  originalLists: List[] = [];
+
+  disabledDrag: boolean;
 
   activeBoard: any;
   user: any;
@@ -49,7 +49,11 @@ export class BoardComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private listDataService: ListDataService,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private loadingService: LoadingService,
+    private cardDataService: CardDataService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   get listName(): AbstractControl {
@@ -65,15 +69,27 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {}
 
-  addCard() {
+  ngAfterViewInit(): void {
+    this.loadingService.loading$.next(false);
+    this.listenToRouteChanges();
+  }
+
+  addCard(list: List) {
     this.modalService.show(CreateCardComponent, {
       class: 'modal-lg',
+      ignoreBackdropClick: true,
+      initialState: {
+        list,
+        userId: this.user.id,
+      },
     });
   }
 
-  viewCard() {
-    this.modalService.show(CardInfoComponent, {
-      class: 'modal-lg',
+  viewCard(card: Card) {
+    this.router.navigate([], {
+      queryParams: {
+        cardId: card.id,
+      },
     });
   }
 
@@ -145,6 +161,51 @@ export class BoardComponent implements OnInit, OnDestroy {
     }
   }
 
+  async dropCards(event: any) {
+    console.log(event);
+
+    const list1 = event.container.data;
+    const list2 = event.previousContainer.data;
+
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data.$$cards,
+        event.previousIndex,
+        event.currentIndex
+      );
+
+      list1.$$cards = list1.$$cards.map((l, i) => ({ ...l, sortPosition: i }));
+
+      this.cardDataService.batchUpdates(list1.$$cards);
+    } else {
+      transferArrayItem(
+        event.previousContainer.data.$$cards,
+        event.container.data.$$cards,
+        event.previousIndex,
+        event.currentIndex
+      );
+
+      list1.$$cards = list1.$$cards.map((l, i) => ({
+        ...l,
+        sortPosition: i,
+        listId: list1.id,
+      }));
+      list2.$$cards = list2.$$cards.map((l, i) => ({
+        ...l,
+        sortPosition: i,
+        listId: list2.id,
+      }));
+
+      if (event.container.data.$$cards.length) {
+        this.cardDataService.batchUpdates(event.container.data.$$cards);
+      }
+
+      if (event.previousContainer.data.$$cards.length) {
+        this.cardDataService.batchUpdates(event.previousContainer.data.$$cards);
+      }
+    }
+  }
+
   private getActiveBoard() {
     this.boardStateService.activeBoard$
       .pipe(untilDestroyed(this))
@@ -153,10 +214,26 @@ export class BoardComponent implements OnInit, OnDestroy {
   private getLists() {
     this.boardStateService.activeBoardLists$
       .pipe(untilDestroyed(this))
-      .subscribe(
-        (lists) =>
-          (this.lists = lists.sort((a, b) => a.sortPosition - b.sortPosition))
-      );
+      .subscribe((lists) => {
+        this.lists = lists.sort((a, b) => a.sortPosition - b.sortPosition);
+        this.originalLists = cloneDeep(this.lists);
+      });
+
+    this.boardStateService.searchCardTerm$.subscribe((search) => {
+      this.disabledDrag = Boolean(search);
+
+      if (search) {
+        this.lists = this.lists.map((list) => {
+          list.$$cards = list.$$cards.filter((card) =>
+            card.name.toLowerCase().includes(search.toLowerCase())
+          );
+
+          return list;
+        });
+      } else {
+        this.lists = cloneDeep(this.originalLists);
+      }
+    });
   }
 
   private getUser() {
@@ -168,6 +245,27 @@ export class BoardComponent implements OnInit, OnDestroy {
   private initAddListForm() {
     this.addListForm = this.formBuilder.group({
       name: [null, [Validators.required, Validators.maxLength(25)]],
+    });
+  }
+
+  private listenToRouteChanges() {
+    this.route.queryParams.subscribe(({ cardId }) => {
+      if (cardId) {
+        const lists = this.lists;
+        const allCards = flatten(lists.map((l) => l.$$cards));
+
+        const card = allCards.find((c) => c.id === cardId);
+
+        if (card) {
+          this.modalService.show(CardInfoComponent, {
+            class: 'modal-lg',
+            ignoreBackdropClick: true,
+            initialState: {
+              card,
+            },
+          });
+        }
+      }
     });
   }
 }

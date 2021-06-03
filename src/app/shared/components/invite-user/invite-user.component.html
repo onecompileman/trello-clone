@@ -22,44 +22,55 @@
       <i class="fa fa-users mr-2"></i>
       <span> Invite Users </span>
     </div>
-    <div class="form-group m-2 position-relative">
-      <input type="search" class="form-control" placeholder="Search Users" />
-      <div *ngIf="false" class="tc-invite__users-list list-group">
+    <form [formGroup]="searchForm" class="form-group m-2 position-relative">
+      <input
+        type="search"
+        class="form-control"
+        formControlName="search"
+        placeholder="Search Users"
+      />
+      <div
+        *ngIf="search.value.length >= 3"
+        class="tc-invite__users-list list-group"
+      >
         <li
           class="list-group-item d-flex align-items-center"
-          *ngFor="let n of [1, 2, 3, 4]"
+          style="cursor: pointer"
+          *ngFor="let user of filteredUsers"
+          (click)="addUserToBoard(user)"
         >
-          <img
-            src="https://scontent.fmnl4-1.fna.fbcdn.net/v/t1.6435-1/cp0/p50x50/104782120_3241128869287857_4439796952515505622_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_eui2=AeFLidDolkwhb4sxdLWlDrM83VYBI8KVYpHdVgEjwpVikZ3cA0gdAGZ_66jtcx2t-IVy5J1suX4T7xQ_iYcBTAoh&_nc_ohc=xHGlVfs0c3sAX-C8ZrG&_nc_ht=scontent.fmnl4-1.fna&tp=27&oh=342df614d0cbf03c846fc7798e8d9448&oe=60CCC72F"
-            alt=""
-          />
+          <img [src]="user?.photoURL" alt="" />
           <div class="d-flex flex-column ml-2">
-            <span> Stephen Vinuya</span>
-            <small>stephen.vinuya@gmail.com</small>
+            <span> {{ user.displayName }}</span>
+            <small>{{ user.email }}</small>
           </div>
         </li>
       </div>
-    </div>
+    </form>
 
     <small for="" class="m-2">Users To Add:</small>
     <div class="d-flex align-items-center flex-wrap m-1">
       <div
         class="tc-invite__user-add-picture m-1"
-        *ngFor="let n of [1, 2, 3, 4]"
+        *ngFor="let user of usersToAdd; let i = index"
       >
-        <img
-          src="https://scontent.fmnl4-1.fna.fbcdn.net/v/t1.6435-1/cp0/p50x50/104782120_3241128869287857_4439796952515505622_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_eui2=AeFLidDolkwhb4sxdLWlDrM83VYBI8KVYpHdVgEjwpVikZ3cA0gdAGZ_66jtcx2t-IVy5J1suX4T7xQ_iYcBTAoh&_nc_ohc=xHGlVfs0c3sAX-C8ZrG&_nc_ht=scontent.fmnl4-1.fna&tp=27&oh=342df614d0cbf03c846fc7798e8d9448&oe=60CCC72F"
-          alt=""
-        />
-        <i class="fa fa-times-circle"></i>
+        <img [src]="user.photoURL" [tooltip]="user.displayName" />
+        <i (click)="removeUser(i)" class="fa fa-times-circle"></i>
       </div>
+    </div>
 
-      <div class="d-flex mt-2 justify-content-between pt-2 pb-2">
-        <div class="btn btn-sm btn-default" (click)="inviteUserDropdown.hide()">
-          Cancel
-        </div>
-        <div class="btn btn-sm btn-primary">Invite users</div>
+    <div class="d-flex ml-2 mt-2 mr-2 justify-content-between pt-2 pb-2">
+      <div class="btn btn-sm btn-default" (click)="inviteUserDropdown.hide()">
+        Cancel
       </div>
+      <button
+        [disabled]="isInvitingUsers || usersToAdd.length === 0"
+        (click)="inviteUsers(); inviteUserDropdown.hide()"
+        class="btn btn-sm btn-primary"
+      >
+        <i *ngIf="isInvitingUsers" class="fa fa-users fa-spinner mr-2"></i>
+        Invite users
+      </button>
     </div>
   </ul>
 </div>
