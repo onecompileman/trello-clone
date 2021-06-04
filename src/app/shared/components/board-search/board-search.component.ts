@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Board } from '../../models/board.model';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'tc-board-search',
@@ -20,7 +21,8 @@ export class BoardSearchComponent implements OnInit, OnDestroy {
 
   constructor(
     private boardDataService: BoardDataService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {

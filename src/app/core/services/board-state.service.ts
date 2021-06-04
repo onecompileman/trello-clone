@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { Board } from 'src/app/shared/models/board.model';
 import { List } from 'src/app/shared/models/list.model';
 import { Card } from 'src/app/shared/models/card.model';
@@ -11,6 +11,7 @@ export class BoardStateService {
   activeBoard$: BehaviorSubject<Board> = new BehaviorSubject(null);
   activeBoardLists$: BehaviorSubject<List[]> = new BehaviorSubject([]);
   searchCardTerm$: BehaviorSubject<string> = new BehaviorSubject(null);
+  activeBoardSub: Subscription;
 
   addCardToList(listId: string, card: Card) {
     const lists = this.activeBoardLists$.getValue();

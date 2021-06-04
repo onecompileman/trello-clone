@@ -56,20 +56,24 @@ export class BoardInfoResolver implements Resolve<any> {
           return this.listDataService.getAllByBoardId(boardId).pipe(
             take(1),
             switchMap((lists) => {
-              const allCards$ = lists.map((list) =>
-                this.cardDataService.getAllByListId(list.id).pipe(take(1))
-              );
+              console.log(lists);
+              if (lists.length) {
+                const allCards$ = lists.map((list) =>
+                  this.cardDataService.getAllByListId(list.id).pipe(take(1))
+                );
 
-              return zip(...allCards$).pipe(
-                map((cards) => {
-                  return lists.map((l, i) => ({
-                    ...l,
-                    $$cards: cards[i].sort(
-                      (a, b) => a.sortPosition - b.sortPosition
-                    ),
-                  }));
-                })
-              );
+                return zip(...allCards$).pipe(
+                  map((cards) => {
+                    return lists.map((l, i) => ({
+                      ...l,
+                      $$cards: cards[i].sort(
+                        (a, b) => a.sortPosition - b.sortPosition
+                      ),
+                    }));
+                  })
+                );
+              }
+              return of([]);
             })
           );
         }

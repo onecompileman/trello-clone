@@ -65,6 +65,7 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.getActiveBoard();
     this.getLists();
     this.initAddListForm();
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   ngOnDestroy(): void {}
@@ -217,6 +218,7 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe((lists) => {
         this.lists = lists.sort((a, b) => a.sortPosition - b.sortPosition);
         this.originalLists = cloneDeep(this.lists);
+        console.log(this.originalLists);
       });
 
     this.boardStateService.searchCardTerm$.subscribe((search) => {

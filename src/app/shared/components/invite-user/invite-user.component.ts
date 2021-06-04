@@ -56,8 +56,12 @@ export class InviteUserComponent implements OnInit {
   async inviteUsers() {
     this.isInvitingUsers = true;
 
-    this.board.$$users.concat(this.usersToAdd);
-    this.board.users.concat(this.usersToAdd.map((u) => u.id));
+    this.board.$$users = this.board.$$users.concat(this.usersToAdd);
+    this.board.users = this.board.users.concat(
+      this.usersToAdd.map((u) => u.id)
+    );
+
+    console.log(this.board);
 
     await this.boardDataService.update({
       id: this.board.id,

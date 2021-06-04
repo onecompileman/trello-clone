@@ -31,8 +31,8 @@
 
     <a
       class="tc-board-search__board-item m-2"
-      [routerLink]="['/main', 'board', board.id]"
       *ngFor="let board of boards$ | async | searchBoard: search"
+      [href]="'#/main/board/' + board.id"
       [ngStyle]="{ backgroundColor: board.colorCode }"
     >
       {{ board.name }}
@@ -41,8 +41,8 @@
 
     <a
       class="tc-board-search__board-item m-2"
-      [routerLink]="['/main', 'board', board.id]"
       *ngFor="let board of sharedBoards$ | async | searchBoard: search"
+      [href]="'#/main/board/' + board.id"
       [ngStyle]="{ backgroundColor: board.colorCode }"
     >
       {{ board.name }}
