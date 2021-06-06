@@ -30,6 +30,10 @@ export class BoardInfoResolver implements Resolve<any> {
   ): Observable<any> | Promise<any> | any {
     const boardId = route.params.id;
 
+    return this.loadBoard(boardId);
+  }
+
+  loadBoard(boardId: string): Observable<any> {
     return this.boardDataService.getBoard(boardId).pipe(
       take(1),
       switchMap((board) => {

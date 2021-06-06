@@ -81,11 +81,12 @@
 
         <div class="d-flex align-items-center mt-2">
           <div
-            class="tc-create-board__image-item m-2"
+            class="tc-create-board__image-item m-2 text-cursor"
             *ngFor="let image of card?.images; let i = index"
             [ngStyle]="{
               backgroundImage: 'url(' + image + ')'
             }"
+            (click)="openPicture(i)"
           >
             <i
               class="fa fa-times-circle text-cursor"

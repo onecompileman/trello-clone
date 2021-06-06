@@ -23,6 +23,7 @@ import { CardDataService } from 'src/app/core/data-services/card.data-service';
 import { Card } from 'src/app/shared/models/card.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { flatten, cloneDeep } from 'lodash';
+import { BoardInfoResolver } from 'src/app/core/resolvers/board-info.resolver';
 
 @Component({
   selector: 'tc-board',
@@ -53,7 +54,8 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
     private loadingService: LoadingService,
     private cardDataService: CardDataService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private boardInfoResolver: BoardInfoResolver
   ) {}
 
   get listName(): AbstractControl {
@@ -61,11 +63,8 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.getUser();
-    this.getActiveBoard();
-    this.getLists();
-    this.initAddListForm();
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.init();
+    // this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   ngOnDestroy(): void {}
@@ -73,6 +72,13 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit(): void {
     this.loadingService.loading$.next(false);
     this.listenToRouteChanges();
+  }
+
+  init() {
+    this.getUser();
+    this.getActiveBoard();
+    this.getLists();
+    this.initAddListForm();
   }
 
   addCard(list: List) {
@@ -116,6 +122,7 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
       boardId: this.activeBoard.id,
       userId: this.user.id,
       sortPosition: this.lists.length,
+      $$cards: [],
     };
 
     this.isAddingListForm = true;
@@ -165,8 +172,8 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
   async dropCards(event: any) {
     console.log(event);
 
-    const list1 = event.container.data;
-    const list2 = event.previousContainer.data;
+    let list1;
+    let list2;
 
     if (event.previousContainer === event.container) {
       moveItemInArray(
@@ -174,6 +181,9 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
         event.previousIndex,
         event.currentIndex
       );
+
+      list1 = cloneDeep(event.container.data);
+      list2 = cloneDeep(event.previousContainer.data);
 
       list1.$$cards = list1.$$cards.map((l, i) => ({ ...l, sortPosition: i }));
 
@@ -186,6 +196,9 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
         event.currentIndex
       );
 
+      list1 = cloneDeep(event.container.data);
+      list2 = cloneDeep(event.previousContainer.data);
+
       list1.$$cards = list1.$$cards.map((l, i) => ({
         ...l,
         sortPosition: i,
@@ -197,12 +210,15 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
         listId: list2.id,
       }));
 
-      if (event.container.data.$$cards.length) {
-        this.cardDataService.batchUpdates(event.container.data.$$cards);
+      if (event.container.data.$$cards && event.container.data.$$cards.length) {
+        this.cardDataService.batchUpdates(list1.$$cards);
       }
 
-      if (event.previousContainer.data.$$cards.length) {
-        this.cardDataService.batchUpdates(event.previousContainer.data.$$cards);
+      if (
+        event.previousContainer.data.$$cards &&
+        event.previousContainer.data.$$cards.length
+      ) {
+        this.cardDataService.batchUpdates(list2.$$cards);
       }
     }
   }
@@ -264,10 +280,17 @@ export class BoardComponent implements OnInit, OnDestroy, AfterViewInit {
             ignoreBackdropClick: true,
             initialState: {
               card,
+              route: this.route,
             },
           });
         }
       }
+    });
+
+    this.route.params.subscribe(({ id }) => {
+      this.boardInfoResolver.loadBoard(id).subscribe(() => {
+        this.init();
+      });
     });
   }
 }

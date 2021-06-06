@@ -9,6 +9,7 @@ import { NgxTagsInputModule } from 'ngx-tags-input';
 import * as fromComponents from './components';
 import * as fromPipes from './pipes';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { LightboxModule } from 'ngx-lightbox';
 @NgModule({
   declarations: [
     ...fromModals.modals,
@@ -25,6 +26,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     ModalModule.forRoot(),
     NgxTagsInputModule,
     TooltipModule.forRoot(),
+    LightboxModule,
   ],
   exports: [
     BsDropdownModule,
@@ -34,6 +36,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     DragDropModule,
     NgxTagsInputModule,
     TooltipModule,
+    LightboxModule,
     ...fromComponents.components,
     ...fromModals.modals,
     ...fromPipes.pipes,

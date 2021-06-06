@@ -67,7 +67,7 @@
   <!-- Add new list -->
   <div class="tc-board__list-item m-2" *ngIf="isAddListOpen">
     <form [formGroup]="addListForm">
-      <div class="tc-board__list-item--header">
+      <div class="tc-board__list-item--header flex-column">
         <input
           type="text"
           class="form-control"
@@ -75,12 +75,15 @@
           required
           maxlength="25"
         />
-        <ng-container *ngIf="listName.touched && listName.errors">
+        <div
+          class="d-flex flex-column"
+          *ngIf="listName.touched && listName.errors"
+        >
           <div class="invalid-feedback">List name is required</div>
           <div class="invalid-feedback">
             List name should be equals or less than 25 characters
           </div>
-        </ng-container>
+        </div>
       </div>
       <div class="tc-board__list-item--footer mt-2">
         <button

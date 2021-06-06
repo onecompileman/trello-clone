@@ -30,6 +30,7 @@
     <label class="mt-2" for="">Personal Boards</label>
 
     <a
+      (click)="boardDropdown.hide()"
       class="tc-board-search__board-item m-2"
       *ngFor="let board of boards$ | async | searchBoard: search"
       [href]="'#/main/board/' + board.id"
@@ -40,6 +41,7 @@
     <label class="mt-3" for="">Shared Boards</label>
 
     <a
+      (click)="boardDropdown.hide()"
       class="tc-board-search__board-item m-2"
       *ngFor="let board of sharedBoards$ | async | searchBoard: search"
       [href]="'#/main/board/' + board.id"

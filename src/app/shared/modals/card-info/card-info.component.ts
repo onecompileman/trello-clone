@@ -13,7 +13,8 @@ import { cloneDeep } from 'lodash';
 import { toBase64 } from 'src/app/core/utils/to-base-64.util';
 import { ConfirmationComponent } from '../confirmation/confirmation.component';
 import { CloudStorageDataService } from 'src/app/core/data-services/cloud-storage.data-service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Lightbox, LightboxConfig } from 'ngx-lightbox';
 
 @Component({
   selector: 'tc-card-info',
@@ -32,6 +33,10 @@ export class CardInfoComponent implements OnInit, OnDestroy {
   imageURLs: string[] = [];
   imageURLsToUpload: string[] = [];
 
+  albums: any[] = [];
+
+  route: ActivatedRoute;
+
   constructor(
     public modalRef: BsModalRef,
     private formBuilder: FormBuilder,
@@ -39,7 +44,8 @@ export class CardInfoComponent implements OnInit, OnDestroy {
     private cloudStorageService: CloudStorageDataService,
     private modalService: BsModalService,
     private toastrService: ToastrService,
-    private router: Router
+    private router: Router,
+    private lightbox: Lightbox
   ) {}
 
   get name(): AbstractControl {
@@ -63,16 +69,32 @@ export class CardInfoComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log(this.card);
     this.initForm();
+
+    if (this.card.images.length) {
+      this.albums = this.card.images.map((image) => ({
+        src: image,
+      }));
+    }
   }
 
   ngOnDestroy() {
-    this.router.navigate([], {
+    this.router.navigate(['.'], {
+      relativeTo: this.route,
       queryParams: {},
     });
   }
 
   closeModal() {
     this.modalRef.hide();
+  }
+
+  openPicture(index: number): void {
+    console.log(this.albums);
+    this.lightbox.open(this.albums, index);
+  }
+
+  closePicture(): void {
+    this.lightbox.close();
   }
 
   deleteCard() {
@@ -110,7 +132,7 @@ export class CardInfoComponent implements OnInit, OnDestroy {
 
     console.log(this.card);
 
-    this.cardDataService.update(this.card);
+    await this.cardDataService.update(this.card);
   }
 
   removeImage(index) {
