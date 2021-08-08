@@ -15,8 +15,34 @@ service cloud.firestore {
       return  b.data.userId == request.auth.uid;
     }
 
+    function checkIfCanWriteCard(card) {
+      let board = get(/databases/$(database)/documents/boards/$(card.data.boardId));
+      return board.data.userId == request.auth.uid || request.auth.uid in board.data.users;  
+    }
+
+
     match /users {
       allow read, create;
+    }
+
+    match /cards {
+      allow create,read: if isSignedIn(); 
+    }
+
+    match /cards/{card} {
+      allow delete, write: if isSignedIn() && checkIfCanWriteCard(get(/databases/$(database)/documents/cards/$(card)));
+      allow read;
+      allow create;
+    }
+
+    match /lists {
+      allow create,read: if isSignedIn(); 
+    }
+
+    match /lists/{list} {
+      allow delete, write: if isSignedIn() && checkBoardIfOwner(get(/databases/$(database)/documents/lists/$(list)));
+      allow read;
+      allow create;
     }
 
     match /users/{user} {
