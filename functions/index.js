@@ -20,8 +20,8 @@ admin.initializeApp();
 exports.onAddedUserToBoard = functions.firestore
   .document('boards/{boardId}')
   .onUpdate(async (snap, context) => {
-    const boardNow = snap.data();
-    boardNow.id = snap.id;
+    const boardNow = snap.after.data();
+    boardNow.id = snap.after.id;
     const boardBefore = snap.before.data();
 
     if (boardNow.users.length != boardBefore.users.length) {
@@ -57,8 +57,8 @@ exports.onAddedUserToBoard = functions.firestore
 exports.onCardUpdated = functions.firestore
   .document('cards/{cardId}')
   .onUpdate(async (snap, context) => {
-    const cardNow = snap.data();
-    cardNow.id = snap.id;
+    const cardNow = snap.after.data();
+    cardNow.id = snap.after.id;
     const cardBefore = snap.before.data();
 
     if (cardNow.listId !== cardBefore.listId) {
@@ -101,8 +101,8 @@ exports.onCardUpdated = functions.firestore
 exports.onCardAdded = functions.firestore
   .document('cards/{cardId}')
   .onCreate(async (snap, context) => {
-    const cardNow = snap.data();
-    cardNow.id = snap.id;
+    const cardNow = snap.after.data();
+    cardNow.id = snap.after.id;
 
     const board = (
       await admin.firestore().collection('boards').doc(cardNow.boardId)
