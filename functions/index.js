@@ -26,7 +26,7 @@ exports.onAddedUserToBoard = functions.firestore
 
     if (boardNow.users.length != boardBefore.users.length) {
       const invitor = (
-        await admin.firestore().collection('users').doc(boardNow.userId)
+        await admin.firestore().collection('users').doc(boardNow.userId).get()
       ).data();
 
       const newlyAddedUsersIds = boardNow.users.filter(
@@ -35,7 +35,7 @@ exports.onAddedUserToBoard = functions.firestore
 
       newlyAddedUsersIds.forEach(async (userId) => {
         const addedUser = (
-          await admin.firestore().collection('users').doc(userId)
+          await admin.firestore().collection('users').doc(userId).get()
         ).data();
 
         const html = welcomeEmail(
@@ -63,20 +63,20 @@ exports.onCardUpdated = functions.firestore
 
     if (cardNow.listId !== cardBefore.listId) {
       const board = (
-        await admin.firestore().collection('boards').doc(cardNow.boardId)
+        await admin.firestore().collection('boards').doc(cardNow.boardId).get()
       ).data();
 
       const oldList = (
-        await admin.firestore().collection('lists').doc(cardBefore.listId)
+        await admin.firestore().collection('lists').doc(cardBefore.listId).get()
       ).data();
 
       const newList = (
-        await admin.firestore().collection('lists').doc(cardNow.listId)
+        await admin.firestore().collection('lists').doc(cardNow.listId).get()
       ).data();
 
       board.users.filter(user !== cardNow.userId).forEach(async (userId) => {
         const user = (
-          await admin.firestore().collection('users').doc(userId)
+          await admin.firestore().collection('users').doc(userId).get()
         ).data();
 
         const html = movedCardEmail(
