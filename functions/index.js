@@ -40,7 +40,7 @@ exports.onAddedUserToBoard = functions.firestore
 
         const html = welcomeEmail(
           invitor.displayName,
-          addedUser.name,
+          addedUser.displayName,
           boardNow
         );
 
@@ -81,7 +81,7 @@ exports.onCardUpdated = functions.firestore
 
         const html = movedCardEmail(
           invitor.displayName,
-          user.name,
+          user.displayName,
           cardNow,
           board.name,
           oldList.name,
@@ -115,7 +115,7 @@ exports.onCardAdded = functions.firestore
 
       const html = createdCardEmail(
         invitor.displayName,
-        user.name,
+        user.displayName,
         cardNow,
         board.name
       );
