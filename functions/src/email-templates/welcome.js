@@ -111,6 +111,7 @@ function welcomeEmail(invitor, userName, board) {
                           <a
                             href="https://onecompileman.com/manage-mo-to/#/main/board/${board.id}"
                             style="
+                            text-decoration:none;
                               width: 250px;
                               font-size: 16px;
                               font-family: Arial, Helvetica, sans-serif;

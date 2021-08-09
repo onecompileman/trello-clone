@@ -98,6 +98,7 @@ function movedCardEmail(
                             <a
                               href="https://onecompileman.com/manage-mo-to/#/main/board/${card.boardId}?cardId=${card.id}"
                               style="
+                              text-decoration:none;
                                 width: 250px;
                                 font-size: 16px;
                                 font-family: Arial, Helvetica, sans-serif;
